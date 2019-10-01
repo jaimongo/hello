@@ -1,46 +1,45 @@
 const express= require('express');
 const app = express();
-var datos=[];
-
-var personas={
-	nombre:null,
-	edad:null,
-}
-
-
+const pokedex = require('./pokedex.json');
 
 
 app.get("/", (req, res) =>{
     console.log(req);
-    res.send("Hola mundo!");
+    res.send("Busqueda pokemon");
 });
 
+app.get("/pokedex", (req, res) =>{
+	res.json(pokedex.pokemon);
 
-app.get("/:id/:nombre/:edad", (req, res) =>{
-	if(req.url!="/favicon.ico"){
-    var dato = req.params.id;
-    console.log(dato);
-    datos.push(dato);
-    console.log(datos);	
+});
 
+app.get("/pokedex/id/:id", (req, res) =>{
+	res.json(pokedex.pokemon[req.params.id-1]);
 
-    var dato1 = req.params.nombre;
-    var dato2 = req.params.edad;
+});
 
-    console.log(dato1);
-    console.log(dato2);
-
-    personas.nombre=dato1;
-    personas.edad=dato2;
-
-    res.send();
-
-    console.log(personas);	
+app.get("/pokedex/name/:nombre", (req, res) =>{
+	for (var i = 0; i >= 151; i++) {
+		if(pokedex.pokemon[i].name==[req.params.nombre]){
+			res.json(pokedex.pokemon[i]);
+		}
+		if(i==150){
+			console.log("nadie se llama asi");
+		}
 	}
+	
 
 });
 
+app.get("/pokedex/rand", (req, res) =>{
+	res.json(pokedex.pokemon[Math.floor(Math.random() * 150)]);
+
+});
+
+app.get("/pokedex/image/:id", (req, res) =>{
+	const imga=res.json(pokedex.pokemon[req.params.id-1].img);
+});
 
 app.listen(3000, () =>{
-    console.log("Server is running...");
+    console.log("Mamalon tu tranqui");
 });
